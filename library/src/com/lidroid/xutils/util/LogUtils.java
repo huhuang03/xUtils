@@ -22,6 +22,9 @@ import android.util.Log;
  * Log工具，类似android.util.Log。
  * tag自动产生，格式: customTagPrefix:className.methodName(L:lineNumber),
  * customTagPrefix为空时只输出：className.methodName(L:lineNumber)。
+ * 
+ * 增加可以自定位tag的log方法。i(tag, content); content前增加前缀：className.methodName(L:lineNumber) : ;
+ * 
  * <p/>
  * Author: wyouflf
  * Date: 13-7-24
@@ -249,6 +252,36 @@ public class LogUtils {
         } else {
             Log.wtf(tag, tr);
         }
+    }
+    
+    public static void v(String tag, String content) {
+    	if (!allowV) return;
+    	Log.i(tag, addPrefix(content));
+    }
+    
+    public static void i(String tag, String content) {
+    	 if (!allowD) return;
+    	 Log.i(tag, addPrefix(content));
+    }
+    
+    public static void d(String tag, String content) {
+    	if (!allowE) return;
+    	Log.d(tag, addPrefix(content));
+    }
+    
+    public static void w(String tag, String content) {
+    	if (!allowE) return;
+    	Log.w(tag, addPrefix(content));
+    }
+    
+    public static void e(String tag, String content) {
+    	if (!allowE) return;
+    	Log.e(tag, addPrefix(content));
+    }
+    
+    /* content前增加类，方法，行号 */
+    private static String addPrefix(String content) {
+    	return generateTag(OtherUtils.getCallerStackTraceElement()) + " : " + content;
     }
 
 }
