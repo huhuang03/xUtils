@@ -60,8 +60,8 @@ public class BitmapUtils implements TaskHandler {
             throw new IllegalArgumentException("context may not be null");
         }
 
-        this.context = context;
-        globalConfig = new BitmapGlobalConfig(context, diskCachePath);
+        this.context = context.getApplicationContext();
+        globalConfig = BitmapGlobalConfig.getInstance(this.context, diskCachePath);
         defaultDisplayConfig = new BitmapDisplayConfig();
     }
 
@@ -199,11 +199,6 @@ public class BitmapUtils implements TaskHandler {
         return this;
     }
 
-    public BitmapUtils configGlobalConfig(BitmapGlobalConfig globalConfig) {
-        this.globalConfig = globalConfig;
-        return this;
-    }
-
     ////////////////////////// display ////////////////////////////////////
 
     public <T extends View> void display(T container, String uri) {
@@ -223,8 +218,6 @@ public class BitmapUtils implements TaskHandler {
             return;
         }
 
-        container.clearAnimation();
-
         if (callBack == null) {
             callBack = new DefaultBitmapLoadCallBack<T>();
         }
@@ -237,12 +230,15 @@ public class BitmapUtils implements TaskHandler {
         BitmapSize size = displayConfig.getBitmapMaxSize();
         displayConfig.setBitmapMaxSize(BitmapCommonUtils.optimizeMaxSizeByView(container, size.getWidth(), size.getHeight()));
 
-        callBack.onPreLoad(container, uri, displayConfig);
+        container.clearAnimation();
 
         if (TextUtils.isEmpty(uri)) {
             callBack.onLoadFailed(container, uri, displayConfig.getLoadFailedDrawable());
             return;
         }
+
+        // start loading
+        callBack.onPreLoad(container, uri, displayConfig);
 
         // find bitmap from mem cache.
         Bitmap bitmap = globalConfig.getBitmapCache().getBitmapFromMemCache(uri, displayConfig);
