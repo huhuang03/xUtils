@@ -300,6 +300,7 @@ listView.setOnScrollListener(new PauseOnScrollListener(bitmapUtils, false, true,
 // 可设置全局的LogUtils.allowD = false，LogUtils.allowI = false...，控制是否输出log。
 // 自定义log输出LogUtils.customLogger = new xxxLogger();
 LogUtils.d("wyouflf");
+LogUtils.d("tag", "tonghu");
 ```
 
 ----
